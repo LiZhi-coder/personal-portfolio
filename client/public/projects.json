@@ -1,0 +1,46 @@
+[
+  {
+    "id": "project-1",
+    "title": "Boolean Function Core",
+    "description": "现如今关于Boolean Function的搜索的研究做的人很多，但是关于在搜索的过程中肯定是要计算其性质的，目前的网络资源中我目前只看到sagemath是有这些性质计算的官方库，但其效率一般而不全，而且没有可视化。",
+    "tags": [
+      "Go",
+      "Backend",
+      "并行计算",
+      "Algorithm Optimization"
+    ],
+    "link": "https://github.com/hui-cyber/BoolCore",
+    "detailsFile": "project-1.md",
+    "date": "2025-12-28"
+  },
+  {
+    "id": "project-2",
+    "title": "多层级分销结算系统：复杂佣金算法的高精度重构实战",
+    "description": "理清积分计算逻辑，优化计算效率，提高界面操作性",
+    "tags": [
+      "Go",
+      "Backend",
+      "MySQL",
+      "High Precision",
+      "Algorithm Optimization"
+    ],
+    "link": "https://github.com/hui-cyber/company-projectV2",
+    "detailsFile": "project-2.md",
+    "date": "2025-12-28"
+  },
+  {
+    "id": "project-3",
+    "title": "混合云架构会员服务网关：内网穿透",
+    "description": "核心数据库必须部署在内网，但用户需要通过公网访问，基于“Local-Push / Cloud-Pull”协议的混合云网关架构，实现内网穿透、API 签名验证以及基于 Token Bucket 的防刷限流体系。",
+    "tags": [
+      "Go",
+      "Architecture",
+      "Network Security",
+      "Nginx",
+      "DevOps"
+    ],
+    "link": "https://www.surennongmu.com",
+    "detailsFile": "project-3.md",
+    "date": "2025-01-05"
+  }
+]

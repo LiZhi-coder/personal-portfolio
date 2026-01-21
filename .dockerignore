@@ -1,0 +1,13 @@
+.git
+.github
+node_modules
+dist
+tmp
+coverage
+*.log
+Dockerfile*
+docker-compose*.yml
+.env
+.env.*
+apps/boolcore/frontend/node_modules
+apps/boolcore/backend/bin

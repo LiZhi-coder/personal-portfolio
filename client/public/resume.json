@@ -1,0 +1,89 @@
+{
+    "name": "Hui",
+    "title": "后端开发",
+    "subtitle": "Backend Developer · Tech Writer",
+    "email": "lizhihui916@163.com",
+    "resumePdf": "/resume.pdf",
+    "experience": [
+        {
+            "title": "后端开发｜项目制",
+            "company": "内部系统",
+            "period": "2025-07 - 2025-11",
+            "highlights": [
+                "负责公司内网多层级营销积分结算系统研发，落地核心链路「订单导入—期末结算重算—积分入账—查询/排行—通知」",
+                "基于 Go + Gin 搭建分层架构，router/service/dao 分层，使用 database/sql 手写 SQL 实现数据访问与事务边界，保证结算一致性与可重复执行",
+                "导入链路实现期间内单据去重校验与上下级关系 DFS 防环校验，可定位到具体行，降低脏数据导致的组织树异常与结算失败",
+                "落地 JWT 认证与 RBAC 权限模型，提供管理端纠错与运维能力，包含关系调整/订单修正/手工转账扣减/回滚期间等",
+                "输出可运维交付方案：mysqldump+gzip+crontab 自动备份与恢复步骤说明，提升数据安全性与故障恢复效率",
+                "服务规模约 2 万用户"
+            ]
+        },
+        {
+            "title": "云端会员服务系统 公网｜后端开发 / 部署交付 项目制",
+            "company": "公网服务",
+            "period": "2025-07 - 2025-11",
+            "highlights": [
+                "为满足全国用户实时查询余额与提交申请的需求，实现公网会员门户：登录、余额展示、转账申请、换号申请等核心功能",
+                "设计并实现本地系统 ↔ 云端的数据对齐接口 /api/sync/*：云端维护用户镜像与申请单，本地定时拉取申请完成事务处理后回写状态形成闭环",
+                "同步接口安全：X-Sync-Key 认证，支持 IP 白名单，并使用常量时间比较；对短信/登录等敏感入口引入限流与验证码冷却，降低滥用风险",
+                "完成云端部署交付：Nginx 反向代理到 Go 后端、systemd 托管服务，env 注入配置、失败自动重启、日志归集",
+                "同步策略：每天至少 1 次全量更新；稳定运行 30 天，持续累积中"
+            ]
+        }
+    ],
+    "education": [
+        {
+            "degree": "计算机硕士",
+            "school": "南京大学",
+            "type": "硕士研究生",
+            "period": "2024 - 2027",
+            "description": "相关课程：C语言程序设计 91、数据结构 87、计算机网络 90、计算机组成原理 87、操作系统 83、数据库安全基础 90、算法设计与分析 91、Linux 操作系统 95"
+        }
+    ],
+    "skills": [
+        {
+            "category": "后端开发｜Go / Web",
+            "items": [
+                "Go / Gin / net/http / Goroutines / 标准库工程化",
+                "鉴权与安全：JWT、Session、RBAC、接口签名 Sync-Key、限流、验证码冷却",
+                "API 与工程化：Swagger swaggo、Bench/性能计时 go test -bench、CLI 分步计时"
+            ]
+        },
+        {
+            "category": "数据库与缓存",
+            "items": [
+                "MySQL：数据建模、事务一致性、索引与约束、迁移脚本 schema 变更",
+                "Redis：Pub/Sub 原型项目"
+            ]
+        },
+        {
+            "category": "Linux 与部署交付",
+            "items": [
+                "Nginx：反向代理、静态资源缓存、gzip、健康检查、HTTPS 终止",
+                "systemd：服务托管、env 注入配置、失败自动重启、日志归集",
+                "运维脚本：crontab 定时任务、mysqldump+gzip 备份与恢复流程"
+            ]
+        }
+    ],
+    "projects": [
+        {
+            "title": "BoolCore｜全国密码技术竞赛作品：布尔函数性质计算引擎 Go",
+            "highlights": [
+                "支持 truth table / hex / int / ANF 多输入形式，计算 16 类性质：非线性度、代数次数、代数免疫度、相关免疫、Bent 判定、谱分布等",
+                "以性能工程为核心：uint64 位打包 + popcount；FMT ANF 与 FWHT Walsh/自相关谱；GF2 位矩阵高斯消元加速代数免疫度计算",
+                "提供可复现对比：benchmark + 分步骤计时 CLI，与 SageMath 对齐对比；记录样本中代数免疫度计算约提升 160×，89ms → 0.5ms"
+            ]
+        },
+        {
+            "title": "GinChat｜即时通讯系统原型 学习项目",
+            "highlights": [
+                "基于 Gin 实现用户管理 API；接入 GORM 自动迁移与 Swagger 文档",
+                "引入 Redis Pub/Sub 与 WebSocket 作为消息推送原型"
+            ]
+        }
+    ],
+    "traits": [
+        "具备端到端交付能力：从 Go 后端开发、MySQL 事务与一致性，到 Linux 部署交付 Nginx/systemd/crontab 与问题闭环",
+        "自驱学习与问题定位能力强，沟通协作顺畅，能对齐需求与上线方案"
+    ]
+}
