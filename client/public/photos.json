@@ -1,26 +1,178 @@
 [
   {
     "id": "photo-1",
-    "title": "傍晚街角",
+    "title": "抹茶蛋糕",
     "date": "2026-04-19",
-    "description": "下班路上抬头时看到的光，楼体和天空刚好把颜色切成了两层。",
-    "image": "/images/photos/photo-1.svg",
-    "alt": "傍晚街角与暖色天空"
+    "description": "一块抹茶蛋糕和一份冰淇淋，甜度刚好，适合慢慢吃完。",
+    "image": "/images/photos/matcha-cake-and-ice-cream.jpg",
+    "alt": "桌上的抹茶蛋糕与一份冰淇淋"
   },
   {
     "id": "photo-2",
-    "title": "清晨窗边",
-    "date": "2026-04-12",
-    "description": "清晨第一束光照进来，桌面上的杯子和影子都变得很安静。",
-    "image": "/images/photos/photo-2.svg",
-    "alt": "清晨窗边的桌面与光影"
+    "title": "一盘青菜",
+    "date": "2026-04-19",
+    "description": "饭桌上最简单的一道菜，颜色很干净，也很耐看。",
+    "image": "/images/photos/chinese-greens-dish.jpg",
+    "alt": "盘中的清炒青菜"
   },
   {
     "id": "photo-3",
-    "title": "雨后天台",
-    "date": "2026-04-05",
-    "description": "雨停之后的空气很干净，远处的楼群像被重新描了一遍边。",
-    "image": "/images/photos/photo-3.svg",
-    "alt": "雨后天台与远处城市楼群"
+    "title": "辣椒鸡块",
+    "date": "2026-04-19",
+    "description": "红椒和鸡块铺满整盘，热气和辣味都很直接。",
+    "image": "/images/photos/spicy-chicken-with-peppers.jpg",
+    "alt": "一盘铺满红椒的鸡块菜肴"
+  },
+  {
+    "id": "photo-4",
+    "title": "站台发车",
+    "date": "2026-04-19",
+    "description": "G35 次列车准备开往上海虹桥，站台上的人群都在等出发。",
+    "image": "/images/photos/g35-train-platform-8.jpg",
+    "alt": "高铁站 8 号站台上的 G35 次列车"
+  },
+  {
+    "id": "photo-5",
+    "title": "候车大厅",
+    "date": "2026-04-19",
+    "description": "灯光很均匀，列车停在对面，整个空间有种稳定的秩序感。",
+    "image": "/images/photos/high-speed-rail-station-interior.jpg",
+    "alt": "高铁站内停靠着列车的大厅"
+  },
+  {
+    "id": "photo-6",
+    "title": "南京南站",
+    "date": "2026-04-19",
+    "description": "傍晚的站台和轨道一起往远处延伸，发车前的光线很柔和。",
+    "image": "/images/photos/nanjing-south-station-platform-26.jpg",
+    "alt": "傍晚时分的南京南站站台与列车"
+  },
+  {
+    "id": "photo-7",
+    "title": "外滩钟楼",
+    "date": "2026-04-19",
+    "description": "夜里路过外滩，钟楼和街灯一起把整条街照亮了。",
+    "image": "/images/photos/shanghai-bund-customs-house-night.jpg",
+    "alt": "上海外滩夜晚亮灯的钟楼建筑"
+  },
+  {
+    "id": "photo-8",
+    "title": "陆家嘴夜景",
+    "date": "2026-04-19",
+    "description": "东方明珠和周围的楼群都亮了起来，天色已经完全沉下去。",
+    "image": "/images/photos/shanghai-lujiazui-skyline-night.jpg",
+    "alt": "上海陆家嘴夜晚的城市天际线"
+  },
+  {
+    "id": "photo-9",
+    "title": "雨花台夜色",
+    "date": "2026-04-19",
+    "description": "纪念碑在夜里被照得很亮，四周反而显得更安静。",
+    "image": "/images/photos/yuhuatai-martyrs-memorial-night.jpg",
+    "alt": "夜晚灯光下的雨花台烈士纪念碑"
+  },
+  {
+    "id": "photo-10",
+    "title": "园中石兽",
+    "date": "2026-04-19",
+    "description": "石兽卧在步道旁边，树木和游人把画面衬得很平静。",
+    "image": "/images/photos/stone-beast-garden-path.jpg",
+    "alt": "园林步道边的一尊石兽"
+  },
+  {
+    "id": "photo-11",
+    "title": "白虎侧影",
+    "date": "2026-04-19",
+    "description": "它趴在石台上，半眯着眼，神情比想象里更松弛。",
+    "image": "/images/photos/white-tiger-close-up.jpg",
+    "alt": "趴在石台上的白虎侧面特写"
+  },
+  {
+    "id": "photo-12",
+    "title": "白虎休息",
+    "date": "2026-04-19",
+    "description": "隔着灌木看过去，它几乎没动，只是安静地待在那儿。",
+    "image": "/images/photos/white-tiger-resting.jpg",
+    "alt": "园区里休息中的白虎"
+  },
+  {
+    "id": "photo-13",
+    "title": "睡着的熊猫",
+    "date": "2026-04-19",
+    "description": "身体缩成一团，睡在树枝中间，周围都显得慢了下来。",
+    "image": "/images/photos/panda-sleeping-on-branches.jpg",
+    "alt": "蜷缩在树枝间睡觉的熊猫"
+  },
+  {
+    "id": "photo-14",
+    "title": "树下积雪",
+    "date": "2026-04-19",
+    "description": "雪落在树根周围，草叶还露着一点绿色，冬天的边界很清楚。",
+    "image": "/images/photos/snow-around-tree-base.jpg",
+    "alt": "树根周围还带着草叶的积雪"
+  },
+  {
+    "id": "photo-15",
+    "title": "雪后球台",
+    "date": "2026-04-19",
+    "description": "乒乓球台表面落了薄雪，像是突然被按下暂停键。",
+    "image": "/images/photos/snow-dusted-table-tennis-table.jpg",
+    "alt": "雪后户外的乒乓球台"
+  },
+  {
+    "id": "photo-16",
+    "title": "球拍",
+    "date": "2026-04-19",
+    "description": "一只樊振东底板放在盒子里，木纹和手柄都拍得很清楚。",
+    "image": "/images/photos/table-tennis-racket-fan-zhendong.jpg",
+    "alt": "盒子里的樊振东乒乓球拍"
+  },
+  {
+    "id": "photo-17",
+    "title": "两台电脑",
+    "date": "2026-04-19",
+    "description": "ThinkBook 和 MacBook 并排放着，很像一张工作日常的留档。",
+    "image": "/images/photos/thinkbook-and-macbook.jpg",
+    "alt": "桌上并排摆放的 ThinkBook 和 MacBook"
+  },
+  {
+    "id": "photo-18",
+    "title": "一瓶冰水",
+    "date": "2026-04-19",
+    "description": "手里拿着一瓶刚买的冰水，像是路上短暂停下来的一刻。",
+    "image": "/images/photos/chilled-bottled-water-in-hand.jpg",
+    "alt": "手里拿着的一瓶冰水"
+  },
+  {
+    "id": "photo-19",
+    "title": "电影画面",
+    "date": "2026-04-19",
+    "description": "随手拍下的一帧电影画面，字幕和人物表情刚好停在一起。",
+    "image": "/images/photos/zootopia-movie-screen.jpg",
+    "alt": "电影屏幕上的一帧动画画面"
+  },
+  {
+    "id": "photo-20",
+    "title": "一句留言",
+    "date": "2026-04-19",
+    "description": "是一段被保留下来的话，语气很轻，但看得出来很认真。",
+    "image": "/images/photos/farewell-message-screenshot.jpg",
+    "alt": "聊天界面里的一段留言截图"
+  },
+  {
+    "id": "photo-21",
+    "title": "郁金香花田",
+    "date": "2026-04-19",
+    "description": "粉白和浅黄的郁金香一排排铺开，颜色过渡得很自然。",
+    "image": "/images/photos/tulip-field-pink-and-yellow.jpg",
+    "alt": "大片粉白与浅黄色的郁金香花田"
+  },
+  {
+    "id": "photo-22",
+    "title": "校园晚霞",
+    "date": "2026-04-19",
+    "description": "天边的云被晚霞慢慢染开，楼体和远山都退成了剪影。",
+    "image": "/images/photos/campus-sunset-clouds.jpg",
+    "alt": "晚霞下的校园楼体与远处山影"
   }
 ]

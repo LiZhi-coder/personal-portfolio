@@ -69,6 +69,10 @@ jobs:
           script: |
             set -e
             cd /opt/personal-portfolio
-            REGISTRY=${{ env.REGISTRY }} IMAGE_TAG=${{ env.IMAGE_TAG }} docker compose pull
-            REGISTRY=${{ env.REGISTRY }} IMAGE_TAG=${{ env.IMAGE_TAG }} docker compose up -d --no-build
+            git fetch origin main
+            git checkout main
+            git reset --hard origin/main
+            REGISTRY=${{ env.REGISTRY }} IMAGE_TAG=${{ env.IMAGE_TAG }} docker compose pull portfolio-web boolcore-web boolcore-api
+            REGISTRY=${{ env.REGISTRY }} IMAGE_TAG=${{ env.IMAGE_TAG }} docker compose up -d --no-build portfolio-web boolcore-web boolcore-api
+            docker compose restart edge
             docker image prune -f
