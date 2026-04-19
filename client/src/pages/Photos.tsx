@@ -97,7 +97,7 @@ export default function Photos() {
                 照片墙
               </h1>
               <p className="text-lg text-muted-foreground font-light max-w-2xl">
-                一些被我留住的瞬间，来自通勤、散步和抬头时看到的光。
+                一些被瞬间，来自通勤、散步、路上和抬头时看到的光。
               </p>
             </div>
 

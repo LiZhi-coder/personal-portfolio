@@ -35,8 +35,10 @@ Edge Nginx (Docker)
 本地提交 -> GitHub Actions
                  |-> 构建镜像(3个)
                  |-> 推送 GHCR
+                 |-> 服务器同步仓库(main)
                  |-> 服务器拉取镜像
-                 |-> docker compose up -d
+                 |-> 更新业务容器
+                 |-> 重启 edge nginx
                  '--> 留痕：Action 记录 + 镜像 Tag + 服务器日志
 ```
 
@@ -139,6 +141,11 @@ cd /opt/personal-portfolio
 git clone git@github.com:<你的用户名>/<仓库名>.git .
 ```
 
+说明：
+- 服务器保留一份仓库工作副本，主要用于 `docker-compose.yml`、`infra/nginx/*.conf` 等挂载配置
+- GitHub Actions 每次部署时会自动执行 `git fetch origin main` + `git reset --hard origin/main`
+- 因此前端静态资源（例如 `client/public/images/photos/*`）只要提交到仓库即可，不需要手动上传到服务器
+
 ### 5.6 停掉旧 Nginx（释放 80/443）
 ```bash
 sudo systemctl stop nginx
@@ -227,12 +234,31 @@ curl -I https://www.hui-nexus.me/api/boolcore/ping
    - `boolcore-web`
    - `boolcore-api`
 2) 推送到 GHCR
-3) 服务器自动拉取镜像并重启服务
+3) 服务器同步部署仓库到 `origin/main`
+4) 服务器自动拉取镜像并更新业务容器
+5) 强制重启 `edge` 容器，刷新 upstream 解析和挂载配置
 
 ### 关键留痕点
 - GitHub Actions 运行日志
 - GHCR 镜像 tag（tag = commit sha）
 - 服务器 `docker compose ps` 状态
+
+### 当前 deploy.yml 的服务器侧动作
+```bash
+cd /opt/personal-portfolio
+git fetch origin main
+git checkout main
+git reset --hard origin/main
+REGISTRY=... IMAGE_TAG=... docker compose pull portfolio-web boolcore-web boolcore-api
+REGISTRY=... IMAGE_TAG=... docker compose up -d --no-build portfolio-web boolcore-web boolcore-api
+docker compose restart edge
+docker image prune -f
+```
+
+说明：
+- 只更新业务容器，避免无关容器被重复创建
+- `edge` 必须重启，否则 Nginx 可能继续持有旧的 upstream 解析结果，出现 `/` 和 `/tools/boolcore/` 转发串位
+- 服务器仓库同步后，`docker-compose.yml` 与 `infra/nginx/*.conf` 会自动跟仓库保持一致
 
 ---
 
@@ -265,14 +291,15 @@ git log --oneline -n 5
 
 1) 找到可用镜像 tag（commit sha）
 2) 替换 `.env` 中 `IMAGE_TAG`
-3) 重新拉取并启动
+3) 更新业务容器并重启 `edge`
 
 ```bash
 nano .env
 # IMAGE_TAG=旧 commit sha
 
-docker compose pull
-docker compose up -d --no-build
+docker compose pull portfolio-web boolcore-web boolcore-api
+docker compose up -d --no-build portfolio-web boolcore-web boolcore-api
+docker compose restart edge
 ```
 
 ---
@@ -287,11 +314,26 @@ git push origin main
 ```
 
 2) GitHub Actions 自动完成部署
+   - 构建并推送新镜像
+   - 服务器同步仓库
+   - 更新业务容器
+   - 重启 `edge`
 
 3) 线上验证
 ```bash
 curl -I https://www.hui-nexus.me/
+curl -I https://www.hui-nexus.me/tools/boolcore/
 ```
+
+### 静态内容更新约定
+- 主站照片、项目截图、Markdown、JSON 数据都应提交到仓库
+- 只要资源位于 `client/public/` 下，构建时就会进入 `portfolio-web` 镜像
+- 不需要手动把照片上传到服务器
+- 例子：
+  - 照片墙图片：`client/public/images/photos/`
+  - 照片墙数据：`client/public/photos.json`
+  - 项目详情图片：`client/public/images/projects/`
+  - 项目正文：`client/public/projects/*.md`
 
 ---
 
@@ -301,6 +343,9 @@ curl -I https://www.hui-nexus.me/
 - 证书失效：`docker compose run --rm certbot renew`
 - BoolCore 前端 404：确认 `/tools/boolcore/` 是否设置为 base
 - API 404：确认 Nginx `location /api/boolcore/` 代理规则
+- 主站突然变成 BoolCore，或 `/tools/boolcore/` 打开了主站：通常是 `edge` 没重启，执行 `docker compose restart edge`
+- 修改了 Nginx / docker-compose 配置但线上没生效：确认 GitHub Actions 的 SSH 步骤已经把服务器仓库同步到 `origin/main`
+- 新照片或 Markdown 没上线：确认文件已经 `git add` 并 push 到远端，而不是只保存在本地
 
 ---
 

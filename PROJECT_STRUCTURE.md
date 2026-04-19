@@ -1,16 +1,19 @@
 # 项目结构详解
 
-本文档详细说明项目的目录结构和各文件的用途。
+本文档说明当前仓库的目录结构、运行方式，以及内容数据之间的绑定关系。
 
 ## 📁 完整目录树
 
 ```
 personal-portfolio/
-├── client/                          # 前端应用目录
-│   ├── public/                      # 静态资源（直接复制到 dist）
+├── client/                          # 主站前端（React + Vite）
+│   ├── public/                      # 静态资源（构建时直接复制到 dist/public）
 │   │   ├── blog.json                # 博客列表数据（运行时 fetch）
+│   │   ├── photos.json              # 照片墙数据（运行时 fetch）
 │   │   ├── projects.json            # 项目列表数据（运行时 fetch）
 │   │   ├── blog/                    # 博客 Markdown
+│   │   ├── images/photos/           # 照片墙图片
+│   │   ├── images/projects/         # 项目正文图片
 │   │   └── projects/                # 项目 Markdown
 │   │
 │   ├── src/                         # 源代码目录
@@ -22,10 +25,13 @@ personal-portfolio/
 │   │   │   └── ui/                  # shadcn/ui 组件库
 │   │   │
 │   │   ├── pages/                   # 页面级组件
-│   │   │   ├── Home.tsx             # 首页（主页面）
+│   │   │   ├── Home.tsx             # 首页
 │   │   │   ├── Projects.tsx         # 项目集页面
+│   │   │   ├── ProjectDetail.tsx    # 项目详情页
 │   │   │   ├── Resume.tsx           # 简历页面
 │   │   │   ├── Blog.tsx             # 博客/碎碎念页面
+│   │   │   ├── BlogDetail.tsx       # 博客详情页
+│   │   │   ├── Photos.tsx           # 照片墙页面
 │   │   │   └── NotFound.tsx         # 404 页面
 │   │   │
 │   │   ├── lib/                     # 工具函数和库
@@ -36,7 +42,7 @@ personal-portfolio/
 │   │   │   └── ThemeContext.tsx     # 主题上下文
 │   │   │
 │   │   ├── hooks/                   # 自定义 React Hooks
-│   │   │   └── useTheme.ts          # 主题 Hook
+│   │   │   └── useFetchData.ts      # 通用 fetch 数据 Hook
 │   │   │
 │   │   ├── App.tsx                  # 应用主组件（路由定义）
 │   │   ├── main.tsx                 # React 入口文件
@@ -51,19 +57,16 @@ personal-portfolio/
 ├── shared/                          # 共享代码目录（占位符）
 │   └── const.ts                     # 共享常量
 │
-├── docs/                            # 文档目录（可选）
-│   └── ...
-│
 ├── DEPLOYMENT_GUIDE.md              # 部署手册
-├── QUICK_START.md                   # 快速开始指南
 ├── PROJECT_STRUCTURE.md             # 本文件
-├── README.md                        # 项目说明
-├── nginx.conf.template              # Nginx 配置模板
-├── deploy.sh                        # 自动化部署脚本
 ├── package.json                     # 项目配置和依赖
+├── pnpm-lock.yaml                   # 锁文件
+├── docker-compose.yml               # 线上部署的 Compose 编排
+├── infra/                           # Dockerfile 与 Nginx 配置
+├── apps/boolcore/                   # BoolCore 前后端源码
 ├── tsconfig.json                    # TypeScript 配置
 ├── vite.config.ts                   # Vite 配置
-└── .gitignore                       # Git 忽略文件
+└── .github/workflows/deploy.yml     # GitHub Actions 自动部署
 ```
 
 ---
@@ -95,22 +98,20 @@ personal-portfolio/
 **修改场景**：修改颜色、字体、间距等设计元素
 
 #### `client/src/pages/Home.tsx`
-**用途**：首页，包含所有主要内容
+**用途**：首页入口页
 
 **主要内容**：
-- Hero 介绍部分
-- 项目集部分（导入 Projects 组件）
-- 简历部分（导入 Resume 组件）
-- 博客部分（导入 Blog 组件）
-- 联系表单
+- 顶部个人信息
+- 站内入口卡片
+- 导航和页脚
 
-**修改场景**：修改个人信息、添加新的页面部分
+**修改场景**：修改首页入口、欢迎信息、个人展示
 
 #### `client/src/pages/Projects.tsx`
 **用途**：项目集页面
 
 **主要内容**：
-- 项目列表数据
+- 读取 `projects.json`
 - ProjectCard 组件的使用
 
 **修改场景**：添加/修改项目信息
@@ -129,10 +130,20 @@ personal-portfolio/
 **用途**：博客/碎碎念页面
 
 **主要内容**：
-- 博客文章列表
-- 文章元数据（日期、阅读时间）
+- 读取 `blog.json`
+- 渲染博客文章列表
 
 **修改场景**：发布新文章、修改现有文章
+
+#### `client/src/pages/Photos.tsx`
+**用途**：照片墙页面
+
+**主要内容**：
+- 读取 `photos.json`
+- 渲染照片网格
+- 点击后使用 Dialog 查看大图与文案
+
+**修改场景**：新增照片、调整排序、修改展示文案
 
 ### 组件
 
@@ -192,17 +203,61 @@ personal-portfolio/
   "description": "项目描述",
   "tags": ["标签1", "标签2"],
   "link": "项目链接",
+  "detailsFile": "project-1.md",
   "date": "年份"
 }
 ```
 
 **修改场景**：添加/修改项目信息
 
+#### `client/public/photos.json`
+**用途**：照片墙数据（页面运行时通过 `fetch("/photos.json")` 加载）
+
+**格式**：
+```json
+{
+  "id": "photo-1",
+  "title": "照片标题",
+  "date": "2026-04-19",
+  "description": "一句简洁说明",
+  "image": "/images/photos/example.jpg",
+  "alt": "图片替代文本"
+}
+```
+
+**修改场景**：新增照片、改排序、改文案
+
 #### `client/public/blog.json`
 **用途**：博客列表数据（页面运行时通过 `fetch("/blog.json")` 加载）
 
 #### `client/public/blog/*.md` / `client/public/projects/*.md`
 **用途**：文章/项目详情正文（详情页运行时 fetch 对应 Markdown 并渲染）
+
+#### 内容绑定关系
+
+**项目详情绑定**
+- 列表页先读取 `client/public/projects.json`
+- 用户点击 `/projects/:id` 后，详情页会根据 `id` 找到对应项目
+- 再读取该项里的 `detailsFile`
+- 最终请求 `/projects/${detailsFile}` 渲染 Markdown
+
+例子：
+```json
+{
+  "id": "project-1",
+  "detailsFile": "project-1.md"
+}
+```
+
+表示访问 `/projects/project-1` 时，会加载 `client/public/projects/project-1.md`
+
+**博客详情绑定**
+- 逻辑与项目一致：`blog.json` 中的 `id` 决定路由，`detailsFile` 决定正文 Markdown
+
+**照片墙绑定**
+- `photos.json` 只负责顺序、标题、日期、说明和图片路径
+- 图片文件统一放在 `client/public/images/photos/`
+- 页面会严格按 `photos.json` 的数组顺序展示，不做自动分类和排序
 
 ### 配置文件
 
@@ -249,17 +304,6 @@ personal-portfolio/
 
 ### 文档文件
 
-#### `README.md`
-**用途**：项目说明文档
-
-**内容**：
-- 项目特性
-- 快速开始
-- 项目结构
-- 设计系统
-- 自定义指南
-- 部署说明
-
 #### `DEPLOYMENT_GUIDE.md`
 **用途**：详细的部署手册
 
@@ -272,41 +316,19 @@ personal-portfolio/
 - 自动化部署
 - 故障排查
 
-#### `QUICK_START.md`
-**用途**：快速开始指南
-
-**内容**：
-- 本地开发步骤
-- 自定义内容指南
-- 常见问题解答
-
 #### `PROJECT_STRUCTURE.md`
 **用途**：本文件，项目结构详解
 
 ### 脚本和配置
 
-#### `deploy.sh`
-**用途**：自动化部署脚本
+#### `.github/workflows/deploy.yml`
+**用途**：GitHub Actions 自动部署工作流
 
 **功能**：
-- 检查前置条件
-- 拉取最新代码
-- 安装依赖
-- 构建项目
-- 设置权限
-- 重新加载 Nginx
-
-**使用**：`./deploy.sh`
-
-#### `nginx.conf.template`
-**用途**：Nginx 配置模板
-
-**内容**：
-- 虚拟主机配置
-- 静态资源缓存
-- 路由处理
-- 安全头配置
-- SSL 配置示例
+- 构建并推送三个镜像到 GHCR
+- SSH 到服务器同步仓库到 `origin/main`
+- 更新业务容器
+- 重启 `edge` 容器，避免 upstream 解析串位
 
 ---
 
@@ -325,7 +347,7 @@ client/src/main.tsx (React 入口)
     ↓
 client/src/App.tsx (路由和主题)
     ↓
-对应的页面组件 (Home/Projects/Resume/Blog)
+对应的页面组件 (Home/Projects/ProjectDetail/Blog/BlogDetail/Photos/Resume)
     ↓
 渲染到浏览器
 ```
@@ -338,11 +360,12 @@ App
 │   └── TooltipProvider
 │       ├── Router
 │       │   ├── Home
-│       │   │   ├── Navigation
-│       │   │   ├── Projects
-│       │   │   ├── Resume
-│       │   │   ├── Blog
-│       │   │   └── Footer
+│       │   ├── Projects
+│       │   ├── ProjectDetail
+│       │   ├── Blog
+│       │   ├── BlogDetail
+│       │   ├── Photos
+│       │   ├── Resume
 │       │   └── NotFound
 │       └── Toaster
 ```
@@ -355,14 +378,16 @@ App
 
 | 需求 | 修改文件 | 说明 |
 | :--- | :--- | :--- |
-| 修改个人名字 | `Home.tsx` | 修改 H1 标题 |
+| 修改个人名字 | `client/src/config/site.ts` | 修改站点基础信息 |
 | 修改导航菜单 | `Navigation.tsx` | 修改 `navItems` 数组 |
-| 添加项目 | `projects.json` | 添加新的项目对象 |
+| 添加项目 | `client/public/projects.json` + `client/public/projects/*.md` | 列表和正文要同时补 |
+| 添加照片 | `client/public/images/photos/` + `client/public/photos.json` | 图片和元数据要同时补 |
+| 修改照片墙顺序 | `client/public/photos.json` | 页面按 JSON 数组顺序展示 |
 | 修改颜色 | `index.css` | 修改 CSS 变量 |
-| 修改字体 | `index.html` + `index.css` | 导入新字体并更新 CSS |
+| 修改字体 | `client/src/index.css` | 调整全局字体变量和排版 |
 | 添加新页面 | 创建新 `.tsx` 文件 | 在 `pages/` 目录中创建 |
 | 添加新组件 | 创建新 `.tsx` 文件 | 在 `components/` 目录中创建 |
-| 修改 Nginx 配置 | `nginx.conf.template` | 复制到服务器后修改 |
+| 修改 Nginx 配置 | `infra/nginx/*.conf` | 由 GitHub Actions 同步到服务器 |
 
 ---
 
@@ -394,7 +419,7 @@ App
 
 5. **部署**
    ```bash
-   # 上传到服务器并运行 deploy.sh
+   git push origin main
    ```
 
 ---
@@ -424,8 +449,5 @@ App
 
 ## 📚 相关文档
 
-- **快速开始**：`QUICK_START.md`
 - **部署指南**：`DEPLOYMENT_GUIDE.md`
-- **项目说明**：`README.md`
-
-祝您开发愉快！🎉
+- **项目结构**：`PROJECT_STRUCTURE.md`
