@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import { useFetchData } from "@/hooks/useFetchData";
 import { Helmet } from "react-helmet-async";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { siteConfig } from "@/config/site";
 
 interface Project {
@@ -54,8 +55,24 @@ export default function Projects() {
             </div>
 
             {loading && (
-              <div className="flex items-center justify-center py-20">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+              <div className="space-y-6">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="p-6 mb-6 border border-border/40 rounded-2xl">
+                    <div className="space-y-4">
+                      <div className="flex items-start justify-between gap-4">
+                        <Skeleton className="h-6 w-1/3" />
+                        <Skeleton className="h-6 w-16 rounded-full" />
+                      </div>
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-5/6" />
+                      <div className="flex gap-2">
+                        <Skeleton className="h-6 w-12 rounded-full" />
+                        <Skeleton className="h-6 w-16 rounded-full" />
+                        <Skeleton className="h-6 w-20 rounded-full" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 

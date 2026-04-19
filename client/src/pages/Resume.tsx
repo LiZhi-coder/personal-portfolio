@@ -10,6 +10,7 @@ import TimelineItem from "@/components/TimelineItem";
 import { useEffect, useState } from "react";
 import { Briefcase, GraduationCap, Lightbulb, FolderPlus, Info, Download, Mail } from "lucide-react";
 import type { ResumeData } from "@/types/resume";
+import { toast } from "sonner";
 
 export default function Resume() {
   const [data, setData] = useState<ResumeData | null>(null);
@@ -183,6 +184,7 @@ export default function Resume() {
               <a
                 href={data.resumePdf}
                 download
+                onClick={() => toast("已发起简历下载请求")}
                 className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 transition-all rounded-sm shadow-sm hover:shadow-md"
               >
                 <Download className="w-5 h-5" />

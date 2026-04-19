@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { useFetchData } from "@/hooks/useFetchData";
 import { Link } from "wouter";
 import { Helmet } from "react-helmet-async";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface BlogPost {
   id: string;
@@ -41,8 +42,19 @@ export default function Blog() {
             </div>
 
             {loading && (
-              <div className="flex items-center justify-center py-20">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+              <div className="space-y-6">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="p-6 border border-border/40 rounded-2xl">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between gap-4">
+                        <Skeleton className="h-6 w-1/2" />
+                        <Skeleton className="h-6 w-16 rounded-full" />
+                      </div>
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-4/5" />
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 

@@ -5,7 +5,8 @@ import NotFound from "@/pages/NotFound";
 import Photos from "@/pages/Photos";
 import ProjectDetail from "@/pages/ProjectDetail";
 import { HelmetProvider } from "react-helmet-async";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
+import { AnimatePresence, motion } from "framer-motion";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
@@ -15,19 +16,31 @@ import Blog from "./pages/Blog";
 
 
 function Router() {
+  const [location] = useLocation();
+
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/projects" component={Projects} />
-      <Route path="/projects/:id" component={ProjectDetail} />
-      <Route path="/photos" component={Photos} />
-      <Route path="/resume" component={Resume} />
-      <Route path="/blog" component={Blog} />
-      <Route path="/blog/:id" component={BlogDetail} />
-      <Route path="/404" component={NotFound} />
-      {/* Final fallback route */}
-      <Route component={NotFound} />
-    </Switch>
+    <AnimatePresence>
+      <motion.div
+        key={location}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.15 }}
+      >
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/projects" component={Projects} />
+          <Route path="/projects/:id" component={ProjectDetail} />
+          <Route path="/photos" component={Photos} />
+          <Route path="/resume" component={Resume} />
+          <Route path="/blog" component={Blog} />
+          <Route path="/blog/:id" component={BlogDetail} />
+          <Route path="/404" component={NotFound} />
+          {/* Final fallback route */}
+          <Route component={NotFound} />
+        </Switch>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
@@ -42,7 +55,6 @@ function App() {
       <HelmetProvider>
         <ThemeProvider
           defaultTheme="light"
-          // switchable
         >
           <TooltipProvider>
             <Toaster />
