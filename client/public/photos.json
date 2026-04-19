@@ -1,0 +1,26 @@
+[
+  {
+    "id": "photo-1",
+    "title": "傍晚街角",
+    "date": "2026-04-19",
+    "description": "下班路上抬头时看到的光，楼体和天空刚好把颜色切成了两层。",
+    "image": "/images/photos/photo-1.svg",
+    "alt": "傍晚街角与暖色天空"
+  },
+  {
+    "id": "photo-2",
+    "title": "清晨窗边",
+    "date": "2026-04-12",
+    "description": "清晨第一束光照进来，桌面上的杯子和影子都变得很安静。",
+    "image": "/images/photos/photo-2.svg",
+    "alt": "清晨窗边的桌面与光影"
+  },
+  {
+    "id": "photo-3",
+    "title": "雨后天台",
+    "date": "2026-04-05",
+    "description": "雨停之后的空气很干净，远处的楼群像被重新描了一遍边。",
+    "image": "/images/photos/photo-3.svg",
+    "alt": "雨后天台与远处城市楼群"
+  }
+]

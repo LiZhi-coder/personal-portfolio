@@ -1,0 +1,24 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1200" fill="#F5F1EA"/>
+  <rect x="170" y="120" width="1260" height="760" rx="28" fill="#FBF8F2" stroke="#DED3C7" stroke-width="12"/>
+  <rect x="250" y="200" width="510" height="600" fill="url(#windowLight)"/>
+  <rect x="810" y="200" width="540" height="600" fill="#EFE7DC"/>
+  <rect x="760" y="200" width="22" height="600" fill="#D9CAB8"/>
+  <rect x="250" y="488" width="1100" height="18" fill="#E0D4C6"/>
+  <rect x="250" y="800" width="1100" height="90" fill="#E7D9C7"/>
+  <ellipse cx="960" cy="845" rx="170" ry="34" fill="#C7B39B"/>
+  <rect x="910" y="620" width="108" height="208" rx="18" fill="#C88F66"/>
+  <rect x="930" y="590" width="68" height="52" rx="16" fill="#D39A70"/>
+  <path d="M998 642H1068C1118 642 1158 682 1158 732V845H998V642Z" fill="#D8C4AF"/>
+  <path d="M250 200H760V800H250V200Z" fill="url(#sunbeam)" fill-opacity="0.65"/>
+  <defs>
+    <linearGradient id="windowLight" x1="505" y1="200" x2="505" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF8E8"/>
+      <stop offset="1" stop-color="#F0DCC0"/>
+    </linearGradient>
+    <linearGradient id="sunbeam" x1="260" y1="240" x2="760" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF6D6"/>
+      <stop offset="1" stop-color="#FFF6D6" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

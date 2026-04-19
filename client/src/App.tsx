@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import BlogDetail from "@/pages/BlogDetail";
 import NotFound from "@/pages/NotFound";
+import Photos from "@/pages/Photos";
 import ProjectDetail from "@/pages/ProjectDetail";
 import { HelmetProvider } from "react-helmet-async";
 import { Route, Switch } from "wouter";
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/projects" component={Projects} />
       <Route path="/projects/:id" component={ProjectDetail} />
+      <Route path="/photos" component={Photos} />
       <Route path="/resume" component={Resume} />
       <Route path="/blog" component={Blog} />
       <Route path="/blog/:id" component={BlogDetail} />

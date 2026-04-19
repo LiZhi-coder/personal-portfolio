@@ -16,6 +16,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: "首页", href: "/" },
   { label: "项目集", href: "/projects" },
+  { label: "照片墙", href: "/photos" },
   { label: "博客", href: "/blog" },
   { label: "简历", href: "/resume" },
 ];

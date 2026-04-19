@@ -1,0 +1,20 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1200" fill="#EEF2F3"/>
+  <rect y="120" width="1600" height="520" fill="url(#rainSky)"/>
+  <path d="M0 570C130 535 215 548 330 590C445 632 570 668 735 638C900 608 1025 535 1185 530C1345 525 1450 552 1600 610V1200H0V570Z" fill="#D8E1E3"/>
+  <rect x="145" y="720" width="1310" height="220" rx="24" fill="#C9D3D6"/>
+  <rect x="200" y="780" width="1200" height="18" rx="9" fill="#E9EFF0" fill-opacity="0.8"/>
+  <rect x="300" y="470" width="120" height="470" fill="#6C7D87"/>
+  <rect x="450" y="390" width="160" height="550" fill="#7A8A93"/>
+  <rect x="660" y="320" width="190" height="620" fill="#62727C"/>
+  <rect x="900" y="410" width="150" height="530" fill="#7F9099"/>
+  <rect x="1090" y="350" width="210" height="590" fill="#6E8088"/>
+  <circle cx="1210" cy="275" r="72" fill="#F9FCFC" fill-opacity="0.75"/>
+  <path d="M220 900C450 860 725 870 1010 900C1190 918 1315 930 1410 944V1010H220V900Z" fill="#F8FBFB" fill-opacity="0.5"/>
+  <defs>
+    <linearGradient id="rainSky" x1="800" y1="120" x2="800" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C9D6D9"/>
+      <stop offset="1" stop-color="#EEF3F4"/>
+    </linearGradient>
+  </defs>
+</svg>
