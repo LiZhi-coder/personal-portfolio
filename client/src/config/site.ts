@@ -6,7 +6,7 @@
 export const siteConfig = {
     // 个人信息
     name: "呵呜微",
-    title: "Backend Developer · Tech Writer",
+    title: "Backend Developer · Devops Engineer",
     siteName: "Hui Studio",
     email: "lizhihui916@163.com",
     avatar: "/avatar1.png",
