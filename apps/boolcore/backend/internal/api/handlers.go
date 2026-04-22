@@ -47,6 +47,9 @@ type AnalyzeResponse struct {
 	AbsoluteIndicator               int64         `json:"absoluteIndicator"`               // 绝对指标
 	DifferentialUniformity          int64         `json:"differentialUniformity"`          // 差分均匀度
 	AlgebraicImmunity               int           `json:"algebraicImmunity"`               // 代数免疫度
+	FAA                             int           `json:"faa"`                             // 抵抗快速代数攻击能力（早期定义）
+	FAAWithPositiveDegree           int           `json:"faaWithPositiveDegree"`           // 抵抗快速代数攻击能力（限制 1<=deg(g)<n/2）
+	FAI                             int           `json:"fai"`                             // 快速代数免疫（标准定义）
 	Annihilator                     string        `json:"annihilator,omitempty"`           // 零化因子ANF表达式
 	// TODO: 添加更多字段
 }
@@ -137,6 +140,21 @@ func AnalyzeFunctionHandler(c *gin.Context) {
 		algebraicImmunity = ai
 	}
 
+	faa, err := bf.FAA()
+	if err != nil {
+		faa = -1
+	}
+
+	faaPositive, err := bf.FAAWithPositiveDegree()
+	if err != nil {
+		faaPositive = -1
+	}
+
+	fai, err := bf.FAI()
+	if err != nil {
+		fai = -1
+	}
+
 	// 【可选功能 - 已注释】计算零化因子表达式（比较耗时）
 	// 如果需要零化因子，取消下面的注释并注释掉上面的快速版本
 	/*
@@ -177,6 +195,9 @@ func AnalyzeFunctionHandler(c *gin.Context) {
 		AbsoluteIndicator:      bf.AbsoluteIndicator(),
 		DifferentialUniformity: bf.DifferentialUniformity(),
 		AlgebraicImmunity:      algebraicImmunity, // 使用预计算的值
+		FAA:                    faa,
+		FAAWithPositiveDegree:  faaPositive,
+		FAI:                    fai,
 		// Annihilator:                  annihilator,       // 【已禁用】如需启用，取消注释并启用上面的完整计算版本
 	}
 

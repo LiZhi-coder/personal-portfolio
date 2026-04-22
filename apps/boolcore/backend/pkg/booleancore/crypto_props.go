@@ -207,384 +207,695 @@ func (f *BooleanFunction) TransparencyOrder() float64 {
 
 // BitMatrix 使用 uint64 切片来紧凑地存储二元矩阵，以进行高效的位运算.
 type BitMatrix struct {
-    rows        int
-    cols        int
-    wordsPerRow int      // 每行需要多少个 uint64
-    data        []uint64
+	rows        int
+	cols        int
+	wordsPerRow int // 每行需要多少个 uint64
+	data        []uint64
 }
 
 // NewBitMatrix 创建一个新的位矩阵.
 func NewBitMatrix(rows, cols int) *BitMatrix {
-    wordsPerRow := (cols + 63) / 64
-    return &BitMatrix{
-        rows:        rows,
-        cols:        cols,
-        wordsPerRow: wordsPerRow,
-        data:        make([]uint64, rows*wordsPerRow),
-    }
+	wordsPerRow := (cols + 63) / 64
+	return &BitMatrix{
+		rows:        rows,
+		cols:        cols,
+		wordsPerRow: wordsPerRow,
+		data:        make([]uint64, rows*wordsPerRow),
+	}
 }
 
 // Set 设置矩阵在 (r, c) 位置的比特值.
 func (m *BitMatrix) Set(r, c int, val byte) {
-    wordIndex := r*m.wordsPerRow + c/64
-    bitIndex := uint(c % 64)
-    if val == 1 {
-        m.data[wordIndex] |= (1 << bitIndex)
-    } else {
-        m.data[wordIndex] &= ^(1 << bitIndex)
-    }
+	wordIndex := r*m.wordsPerRow + c/64
+	bitIndex := uint(c % 64)
+	if val == 1 {
+		m.data[wordIndex] |= (1 << bitIndex)
+	} else {
+		m.data[wordIndex] &= ^(1 << bitIndex)
+	}
+}
+
+// Toggle 将矩阵在 (r, c) 位置的比特翻转.
+func (m *BitMatrix) Toggle(r, c int) {
+	wordIndex := r*m.wordsPerRow + c/64
+	bitIndex := uint(c % 64)
+	m.data[wordIndex] ^= (1 << bitIndex)
 }
 
 // Get 获取矩阵在 (r, c) 位置的比特值.
 func (m *BitMatrix) Get(r, c int) byte {
-    wordIndex := r*m.wordsPerRow + c/64
-    bitIndex := uint(c % 64)
-    if (m.data[wordIndex]>>bitIndex)&1 == 1 {
-        return 1
-    }
-    return 0
+	wordIndex := r*m.wordsPerRow + c/64
+	bitIndex := uint(c % 64)
+	if (m.data[wordIndex]>>bitIndex)&1 == 1 {
+		return 1
+	}
+	return 0
 }
 
 // SwapRows 交换两行.
 func (m *BitMatrix) SwapRows(r1, r2 int) {
-    if r1 == r2 {
-        return
-    }
-    start1 := r1 * m.wordsPerRow
-    start2 := r2 * m.wordsPerRow
-    for i := 0; i < m.wordsPerRow; i++ {
-        m.data[start1+i], m.data[start2+i] = m.data[start2+i], m.data[start1+i]
-    }
+	if r1 == r2 {
+		return
+	}
+	start1 := r1 * m.wordsPerRow
+	start2 := r2 * m.wordsPerRow
+	for i := 0; i < m.wordsPerRow; i++ {
+		m.data[start1+i], m.data[start2+i] = m.data[start2+i], m.data[start1+i]
+	}
 }
 
 // XorRow 将 srcRow 的值异或到 dstRow 上. 这是性能提升的关键.
 func (m *BitMatrix) XorRow(dstRow, srcRow int) {
-    startDst := dstRow * m.wordsPerRow
-    startSrc := srcRow * m.wordsPerRow
-    for i := 0; i < m.wordsPerRow; i++ {
-        m.data[startDst+i] ^= m.data[startSrc+i]
-    }
+	startDst := dstRow * m.wordsPerRow
+	startSrc := srcRow * m.wordsPerRow
+	for i := 0; i < m.wordsPerRow; i++ {
+		m.data[startDst+i] ^= m.data[startSrc+i]
+	}
 }
 
 // Clone 创建矩阵的深拷贝
 func (m *BitMatrix) Clone() *BitMatrix {
-    newMatrix := &BitMatrix{
-        rows:        m.rows,
-        cols:        m.cols,
-        wordsPerRow: m.wordsPerRow,
-        data:        make([]uint64, len(m.data)),
-    }
-    copy(newMatrix.data, m.data)
-    return newMatrix
+	newMatrix := &BitMatrix{
+		rows:        m.rows,
+		cols:        m.cols,
+		wordsPerRow: m.wordsPerRow,
+		data:        make([]uint64, len(m.data)),
+	}
+	copy(newMatrix.data, m.data)
+	return newMatrix
 }
 
 // computeRREF_GF2 在 BitMatrix 上执行高斯消元法，效率极高.
 // 返回矩阵的秩
 func computeRREF_GF2(m *BitMatrix) int {
-    rank := 0
-    pivotRow := 0
-    for col := 0; col < m.cols && pivotRow < m.rows; col++ {
-        // 寻找主元
-        i := pivotRow
-        for i < m.rows && m.Get(i, col) == 0 {
-            i++
-        }
+	rank := 0
+	pivotRow := 0
+	for col := 0; col < m.cols && pivotRow < m.rows; col++ {
+		// 寻找主元
+		i := pivotRow
+		for i < m.rows && m.Get(i, col) == 0 {
+			i++
+		}
 
-        if i < m.rows { // 找到主元
-            m.SwapRows(pivotRow, i)
+		if i < m.rows { // 找到主元
+			m.SwapRows(pivotRow, i)
 
-            // 消去当前列的其他行的1
-            for j := 0; j < m.rows; j++ {
-                if j != pivotRow && m.Get(j, col) == 1 {
-                    // 这里的 XorRow 函数会一次性处理 64 bits!
-                    m.XorRow(j, pivotRow)
-                }
-            }
-            pivotRow++
-        }
-    }
-    rank = pivotRow
-    return rank
+			// 消去当前列的其他行的1
+			for j := 0; j < m.rows; j++ {
+				if j != pivotRow && m.Get(j, col) == 1 {
+					// 这里的 XorRow 函数会一次性处理 64 bits!
+					m.XorRow(j, pivotRow)
+				}
+			}
+			pivotRow++
+		}
+	}
+	rank = pivotRow
+	return rank
 }
-
 
 // computeRREF_GF2WithSolve 执行高斯消元并返回简化行阶梯形矩阵用于求解
 func computeRREF_GF2WithSolve(m *BitMatrix) (int, *BitMatrix) {
-    rrefMatrix := m.Clone()
-    rank := computeRREF_GF2(rrefMatrix) // 使用RREF版本
-    return rank, rrefMatrix
+	rrefMatrix := m.Clone()
+	rank := computeRREF_GF2(rrefMatrix) // 使用RREF版本
+	return rank, rrefMatrix
 }
 
 // AlgebraicImmunity 计算代数免疫度.
 // 参数 findAnnihilator 控制是否需要计算并返回一个具体的最低次零化子表达式.
 // 返回值: (代数免疫度, 零化子ANF字符串, 错误)
 func (f *BooleanFunction) AlgebraicImmunity(findAnnihilator bool) (int, string, error) {
-    // 边界情况处理
-    if f.n == 0 {
-        return 0, "", nil
-    }
-    if f.n == 1 {
-        tt := truthTableFromUint64Slice(f.packedTruthTable, 2)
-        if tt[0] == tt[1] {
-            // 常数函数
-            return 1, "x0", nil
-        }
-        // 非常数函数,AI=1
-        return 1, "x0", nil
-    }
+	// 边界情况处理
+	if f.n == 0 {
+		return 0, "", nil
+	}
 
-    // 理论上代数免疫度的最大值为 ceil(n/2)
-    maxDegreeToCheck := (f.n + 1) / 2
+	if f.n == 1 {
+		tt := truthTableFromUint64Slice(f.packedTruthTable, 2)
+		if tt[0] == tt[1] {
+			// 常数函数
+			return 1, "x0", nil
+		}
+		// 非常数函数,AI=1
+		return 1, "x0", nil
+	}
 
-    tt := truthTableFromUint64Slice(f.packedTruthTable, 1<<f.n)
+	// 理论上代数免疫度的最大值为 ceil(n/2)
+	maxDegreeToCheck := (f.n + 1) / 2
 
-    // 计算汉明重量以决定检查顺序
-    weight := 0
-    for _, v := range tt {
-        if v == 1 {
-            weight++
-        }
-    }
+	tt := truthTableFromUint64Slice(f.packedTruthTable, 1<<f.n)
 
-    for d := 1; d <= maxDegreeToCheck; d++ {
-        // 决定检查顺序：优先检查支撑集更小的函数
-        var checkOrder [2]bool
-        if weight <= (1 << (f.n - 1)) {
-            checkOrder = [2]bool{true, false} // f 的支撑集更小，先检查 f
-        } else {
-            checkOrder = [2]bool{false, true} // f+1 的支撑集更小，先检查 f+1
-        }
+	// 计算汉明重量以决定检查顺序
+	weight := 0
+	for _, v := range tt {
+		if v == 1 {
+			weight++
+		}
+	}
 
-        for _, checkF := range checkOrder {
-            if findAnnihilator {
-                // 需要具体的零化子，使用完整版本
-                found, annihilator, err := findLowestDegreeAnnihilatorFull(f.n, d, tt, checkF)
-                if err != nil {
-                    return -1, "", err
-                }
-                if found {
-                    return d, annihilator, nil
-                }
-            } else {
-                // 只需要判断存在性，使用快速版本
-                found, err := findAnnihilatorExists(f.n, d, tt, checkF)
-                if err != nil {
-                    return -1, "", err
-                }
-                if found {
-                    return d, "", nil
-                }
-            }
-        }
-    }
+	for d := 1; d <= maxDegreeToCheck; d++ {
+		// 决定检查顺序：优先检查支撑集更小的函数
+		var checkOrder [2]bool
+		if weight <= (1 << (f.n - 1)) {
+			checkOrder = [2]bool{true, false} // f 的支撑集更小，先检查 f
+		} else {
+			checkOrder = [2]bool{false, true} // f+1 的支撑集更小，先检查 f+1
+		}
 
-    return maxDegreeToCheck, "", nil
+		for _, checkF := range checkOrder {
+			if findAnnihilator {
+				// 需要具体的零化子，使用完整版本
+				found, annihilator, err := findLowestDegreeAnnihilatorFull(f.n, d, tt, checkF)
+				if err != nil {
+					return -1, "", err
+				}
+				if found {
+					return d, annihilator, nil
+				}
+			} else {
+				// 只需要判断存在性，使用快速版本
+				found, err := findAnnihilatorExists(f.n, d, tt, checkF)
+				if err != nil {
+					return -1, "", err
+				}
+				if found {
+					return d, "", nil
+				}
+			}
+		}
+	}
+
+	return maxDegreeToCheck, "", nil
+}
+
+// FAA 按较早文献中的定义计算抵抗快速代数攻击能力:
+// FAA(f) = min{deg(g)+deg(h) | fg=h, deg(g) < n/2, g!=0, h!=0}.
+func (f *BooleanFunction) FAA() (int, error) {
+	return f.fastAttackMetric(faaMode)
+}
+
+// FAAWithPositiveDegree 计算排除 deg(g)=0 平凡候选后的 FAA 型指标:
+// FAA+(f) = min{deg(g)+deg(h) | fg=h, 1<=deg(g)<n/2, g!=0, h!=0}.
+func (f *BooleanFunction) FAAWithPositiveDegree() (int, error) {
+	maxAllowedDegree := (f.n - 1) / 2
+	metric, found, err := f.fastAttackMetricWithDegreeRange(faaPositiveMode, 1, maxAllowedDegree, 2*f.n)
+	if err != nil {
+		return -1, err
+	}
+	if !found {
+		return -1, fmt.Errorf("failed to determine %s", fastAttackModeName(faaPositiveMode))
+	}
+	return metric, nil
+}
+
+// FAI 按常见文献中的标准定义计算快速代数免疫:
+// FAI(f) = min(2AI(f), min_{1<=deg(g)<AI(f)}(deg(g)+deg(fg))).
+func (f *BooleanFunction) FAI() (int, error) {
+	ai, err := f.standardAIForFAI()
+	if err != nil {
+		return -1, err
+	}
+
+	best := 2 * ai
+	if ai <= 1 {
+		return best, nil
+	}
+
+	metric, found, err := f.fastAttackMetricWithDegreeRange(faiMode, 1, ai-1, best-1)
+	if err != nil {
+		return -1, err
+	}
+	if found && metric < best {
+		best = metric
+	}
+	return best, nil
+}
+
+func (f *BooleanFunction) standardAIForFAI() (int, error) {
+	if f.n == 0 {
+		return 0, nil
+	}
+
+	tt := truthTableFromUint64Slice(f.packedTruthTable, 1<<f.n)
+	if isConstantTruthTable(tt) {
+		return 0, nil
+	}
+
+	ai, _, err := f.AlgebraicImmunity(false)
+	if err != nil {
+		return -1, err
+	}
+	return ai, nil
+}
+
+type fastAttackMode int
+
+const (
+	faaMode fastAttackMode = iota
+	faaPositiveMode
+	faiMode
+)
+
+func (f *BooleanFunction) fastAttackMetric(mode fastAttackMode) (int, error) {
+	minAllowedDegree := 0
+	maxAllowedDegree := f.n
+	maxSum := f.n
+	if mode == faaMode {
+		maxAllowedDegree = (f.n - 1) / 2
+	} else {
+		minAllowedDegree = 1
+		maxSum = 2 * f.n
+	}
+	metric, found, err := f.fastAttackMetricWithDegreeRange(mode, minAllowedDegree, maxAllowedDegree, maxSum)
+	if err != nil {
+		return -1, err
+	}
+	if !found {
+		return -1, fmt.Errorf("failed to determine %s", fastAttackModeName(mode))
+	}
+	return metric, nil
+}
+
+func (f *BooleanFunction) fastAttackMetricWithDegreeRange(mode fastAttackMode, minAllowedDegree, maxAllowedDegree, maxSum int) (int, bool, error) {
+	if f.n == 0 {
+		return 0, true, nil
+	}
+
+	tt := truthTableFromUint64Slice(f.packedTruthTable, 1<<f.n)
+	if isZeroTruthTable(tt) {
+		return -1, false, fmt.Errorf("%s is undefined for the zero function", fastAttackModeName(mode))
+	}
+
+	anfSupport := nonzeroANFIndices(f.AlgebraicNormalFormCoefficients())
+	degF := f.AlgebraicDegree()
+
+	if maxAllowedDegree < minAllowedDegree {
+		return -1, false, nil
+	}
+
+	gMonomialCache := make(map[int][]int, maxAllowedDegree+1)
+	annihilatorDimCache := make(map[int]int, maxAllowedDegree+1)
+	solutionDimCache := make(map[[2]int]int)
+
+	for sum := 0; sum <= maxSum; sum++ {
+		upperDegree := sum / 2
+		if upperDegree > maxAllowedDegree {
+			upperDegree = maxAllowedDegree
+		}
+		for e := minAllowedDegree; e <= upperDegree; e++ {
+			d := sum - e
+			if hasFastAttackWitness(tt, anfSupport, degF, f.n, e, d, mode, gMonomialCache, annihilatorDimCache, solutionDimCache) {
+				return sum, true, nil
+			}
+		}
+	}
+
+	return -1, false, nil
+}
+
+func hasFastAttackWitness(
+	tt []byte,
+	anfSupport []int,
+	degF, n, e, d int,
+	mode fastAttackMode,
+	gMonomialCache map[int][]int,
+	annihilatorDimCache map[int]int,
+	solutionDimCache map[[2]int]int,
+) bool {
+	if d < 0 || d > n {
+		return false
+	}
+
+	key := [2]int{e, d}
+	solutionDim, ok := solutionDimCache[key]
+	if !ok {
+		gMonomials := cachedMonomialsUpToDegree(gMonomialCache, n, e)
+		solutionDim = boundedProductSolutionDimension(n, d, gMonomials, anfSupport)
+		solutionDimCache[key] = solutionDim
+	}
+	if solutionDim == 0 {
+		return false
+	}
+
+	annihilatorDim, ok := annihilatorDimCache[e]
+	if !ok {
+		gMonomials := cachedMonomialsUpToDegree(gMonomialCache, n, e)
+		annihilatorDim = annihilatorDimension(gMonomials, tt)
+		annihilatorDimCache[e] = annihilatorDim
+	}
+	if solutionDim <= annihilatorDim {
+		return false
+	}
+
+	if mode == faiMode && annihilatorDim == 0 && solutionDim == 1 && degF <= d {
+		// 此时解空间仅为 {0, 1}，而 FAI 的定义排除了常数乘子 g=1。
+		return false
+	}
+
+	return true
+}
+
+func cachedMonomialsUpToDegree(cache map[int][]int, n, d int) []int {
+	if monomials, ok := cache[d]; ok {
+		return monomials
+	}
+	monomials := monomialsUpToDegree(n, d)
+	cache[d] = monomials
+	return monomials
+}
+
+func monomialsUpToDegree(n, d int) []int {
+	if d < 0 {
+		return nil
+	}
+
+	monomials := make([]int, 0)
+	for i := 0; i < (1 << n); i++ {
+		if bits.OnesCount(uint(i)) <= d {
+			monomials = append(monomials, i)
+		}
+	}
+	return monomials
+}
+
+func highDegreeMonomials(n, d int) []int {
+	if d >= n {
+		return nil
+	}
+
+	monomials := make([]int, 0)
+	for i := 0; i < (1 << n); i++ {
+		if bits.OnesCount(uint(i)) > d {
+			monomials = append(monomials, i)
+		}
+	}
+	return monomials
+}
+
+func nonzeroANFIndices(coeffs []byte) []int {
+	indices := make([]int, 0)
+	for i, coeff := range coeffs {
+		if coeff == 1 {
+			indices = append(indices, i)
+		}
+	}
+	return indices
+}
+
+func boundedProductSolutionDimension(n, d int, gMonomials, anfSupport []int) int {
+	numVars := len(gMonomials)
+	if numVars == 0 {
+		return 0
+	}
+
+	highMonomials := highDegreeMonomials(n, d)
+	if len(highMonomials) == 0 {
+		return numVars
+	}
+
+	rowIndex := make(map[int]int, len(highMonomials))
+	for i, monomial := range highMonomials {
+		rowIndex[monomial] = i
+	}
+
+	matrix := NewBitMatrix(len(highMonomials), numVars)
+	for col, gMonomial := range gMonomials {
+		for _, fMonomial := range anfSupport {
+			productMonomial := fMonomial | gMonomial
+			if row, ok := rowIndex[productMonomial]; ok {
+				matrix.Toggle(row, col)
+			}
+		}
+	}
+
+	rank := computeRREF_GF2(matrix)
+	return numVars - rank
+}
+
+func annihilatorDimension(gMonomials []int, tt []byte) int {
+	numVars := len(gMonomials)
+	if numVars == 0 {
+		return 0
+	}
+
+	support := make([]int, 0)
+	for i, val := range tt {
+		if val == 1 {
+			support = append(support, i)
+		}
+	}
+
+	if len(support) == 0 {
+		return numVars
+	}
+
+	matrix := NewBitMatrix(len(support), numVars)
+	for row, inputVec := range support {
+		for col, monomial := range gMonomials {
+			if (inputVec & monomial) == monomial {
+				matrix.Set(row, col, 1)
+			}
+		}
+	}
+
+	rank := computeRREF_GF2(matrix)
+	return numVars - rank
+}
+
+func isZeroTruthTable(tt []byte) bool {
+	for _, bit := range tt {
+		if bit != 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func isConstantTruthTable(tt []byte) bool {
+	if len(tt) == 0 {
+		return true
+	}
+	first := tt[0]
+	for _, bit := range tt[1:] {
+		if bit != first {
+			return false
+		}
+	}
+	return true
+}
+
+func fastAttackModeName(mode fastAttackMode) string {
+	if mode == faaMode {
+		return "FAA"
+	}
+	if mode == faaPositiveMode {
+		return "FAAWithPositiveDegree"
+	}
+	return "FAI"
 }
 
 // findAnnihilatorExists 快速判断是否存在零化子（不求解具体表达式）
 func findAnnihilatorExists(n, d int, tt []byte, useSupportOfF bool) (bool, error) {
-    // 1. 生成单项式
-    monomials := make([]int, 0)
-    for i := 0; i < (1 << n); i++ {
-        if bits.OnesCount(uint(i)) <= d {
-            monomials = append(monomials, i)
-        }
-    }
-    numVars := len(monomials)
+	// 1. 生成单项式
+	monomials := make([]int, 0)
+	for i := 0; i < (1 << n); i++ {
+		if bits.OnesCount(uint(i)) <= d {
+			monomials = append(monomials, i)
+		}
+	}
+	numVars := len(monomials)
 
-    // 2. 构建支撑集
-    support := make([]int, 0)
-    targetVal := byte(1)
-    if !useSupportOfF {
-        targetVal = byte(0)
-    }
-    for i, val := range tt {
-        if val == targetVal {
-            support = append(support, i)
-        }
-    }
+	// 2. 构建支撑集
+	support := make([]int, 0)
+	targetVal := byte(1)
+	if !useSupportOfF {
+		targetVal = byte(0)
+	}
+	for i, val := range tt {
+		if val == targetVal {
+			support = append(support, i)
+		}
+	}
 
-    // 常数函数特殊处理
-    if len(support) == 0 {
-        return d >= 1, nil
-    }
+	// 常数函数特殊处理
+	if len(support) == 0 {
+		return d >= 1, nil
+	}
 
-    numEqs := len(support)
+	numEqs := len(support)
 
-    // 如果方程数少于未知数个数，必然存在非零解
-    if numEqs < numVars {
-        return true, nil
-    }
+	// 如果方程数少于未知数个数，必然存在非零解
+	if numEqs < numVars {
+		return true, nil
+	}
 
-    // 3. 构建 BitMatrix
-    matrix := NewBitMatrix(numEqs, numVars)
-    for i := 0; i < numEqs; i++ {
-        inputVec := support[i]
-        for j := 0; j < numVars; j++ {
-            monomial := monomials[j]
-            if (inputVec & monomial) == monomial {
-                matrix.Set(i, j, 1)
-            }
-        }
-    }
+	// 3. 构建 BitMatrix
+	matrix := NewBitMatrix(numEqs, numVars)
+	for i := 0; i < numEqs; i++ {
+		inputVec := support[i]
+		for j := 0; j < numVars; j++ {
+			monomial := monomials[j]
+			if (inputVec & monomial) == monomial {
+				matrix.Set(i, j, 1)
+			}
+		}
+	}
 
-    // 4. 调用优化版的高斯消元
-    rank := computeRREF_GF2(matrix)
+	// 4. 调用优化版的高斯消元
+	rank := computeRREF_GF2(matrix)
 
-    return rank < numVars, nil
+	return rank < numVars, nil
 }
 
 // findLowestDegreeAnnihilatorFull 完整版本，计算具体的零化子表达式
 func findLowestDegreeAnnihilatorFull(n, d int, tt []byte, useSupportOfF bool) (bool, string, error) {
-    // 1. 生成单项式
-    monomials := make([]int, 0)
-    for i := 0; i < (1 << n); i++ {
-        if bits.OnesCount(uint(i)) <= d {
-            monomials = append(monomials, i)
-        }
-    }
-    numVars := len(monomials)
+	// 1. 生成单项式
+	monomials := make([]int, 0)
+	for i := 0; i < (1 << n); i++ {
+		if bits.OnesCount(uint(i)) <= d {
+			monomials = append(monomials, i)
+		}
+	}
+	numVars := len(monomials)
 
-    // 2. 构建支撑集
-    support := make([]int, 0)
-    targetVal := byte(1)
-    if !useSupportOfF {
-        targetVal = byte(0)
-    }
-    for i, val := range tt {
-        if val == targetVal {
-            support = append(support, i)
-        }
-    }
+	// 2. 构建支撑集
+	support := make([]int, 0)
+	targetVal := byte(1)
+	if !useSupportOfF {
+		targetVal = byte(0)
+	}
+	for i, val := range tt {
+		if val == targetVal {
+			support = append(support, i)
+		}
+	}
 
-    // 常数函数特殊处理
-    if len(support) == 0 {
-        if d >= 1 {
-            return true, "x0", nil
-        }
-        return false, "", nil
-    }
+	// 常数函数特殊处理
+	if len(support) == 0 {
+		if d >= 1 {
+			return true, "x0", nil
+		}
+		return false, "", nil
+	}
 
-    numEqs := len(support)
+	numEqs := len(support)
 
-    // 3. 构建 BitMatrix
-    matrix := NewBitMatrix(numEqs, numVars)
-    for i := 0; i < numEqs; i++ {
-        inputVec := support[i]
-        for j := 0; j < numVars; j++ {
-            monomial := monomials[j]
-            if (inputVec & monomial) == monomial {
-                matrix.Set(i, j, 1)
-            }
-        }
-    }
+	// 3. 构建 BitMatrix
+	matrix := NewBitMatrix(numEqs, numVars)
+	for i := 0; i < numEqs; i++ {
+		inputVec := support[i]
+		for j := 0; j < numVars; j++ {
+			monomial := monomials[j]
+			if (inputVec & monomial) == monomial {
+				matrix.Set(i, j, 1)
+			}
+		}
+	}
 
-    // 4. 调用带求解的高斯消元
-    rank, rrefMatrix := computeRREF_GF2WithSolve(matrix)
+	// 4. 调用带求解的高斯消元
+	rank, rrefMatrix := computeRREF_GF2WithSolve(matrix)
 
-    if rank < numVars {
-        // 从RREF矩阵中求解
-        solution := solveRREFFromBitMatrix(rrefMatrix, numVars, rank)
-        annihilatorStr := formatAnnihilator(solution, monomials, n)
-        return true, annihilatorStr, nil
-    }
+	if rank < numVars {
+		// 从RREF矩阵中求解
+		solution := solveRREFFromBitMatrix(rrefMatrix, numVars, rank)
+		annihilatorStr := formatAnnihilator(solution, monomials, n)
+		return true, annihilatorStr, nil
+	}
 
-    return false, "", nil
+	return false, "", nil
 }
 
 // solveRREFFromBitMatrix 从 BitMatrix 格式的 RREF 矩阵中找到一个非零特解
 func solveRREFFromBitMatrix(rref *BitMatrix, numVars, rank int) []byte {
-    solution := make([]byte, numVars)
-    pivotCols := make([]int, rank)
-    for i := range pivotCols {
-        pivotCols[i] = -1
-    }
+	solution := make([]byte, numVars)
+	pivotCols := make([]int, rank)
+	for i := range pivotCols {
+		pivotCols[i] = -1
+	}
 
-    // 识别主元列
-    for r := 0; r < rank && r < rref.rows; r++ {
-        for c := 0; c < rref.cols; c++ {
-            if rref.Get(r, c) == 1 {
-                pivotCols[r] = c
-                break
-            }
-        }
-    }
+	// 识别主元列
+	for r := 0; r < rank && r < rref.rows; r++ {
+		for c := 0; c < rref.cols; c++ {
+			if rref.Get(r, c) == 1 {
+				pivotCols[r] = c
+				break
+			}
+		}
+	}
 
-    // 找到第一个自由变量（非主元列），并将其设为1
-    isPivot := make([]bool, numVars)
-    for _, c := range pivotCols {
-        if c != -1 {
-            isPivot[c] = true
-        }
-    }
+	// 找到第一个自由变量（非主元列），并将其设为1
+	isPivot := make([]bool, numVars)
+	for _, c := range pivotCols {
+		if c != -1 {
+			isPivot[c] = true
+		}
+	}
 
-    freeVarIndex := -1
-    for c := numVars - 1; c >= 0; c-- {
-        if !isPivot[c] {
-            freeVarIndex = c
-            break
-        }
-    }
+	freeVarIndex := -1
+	for c := numVars - 1; c >= 0; c-- {
+		if !isPivot[c] {
+			freeVarIndex = c
+			break
+		}
+	}
 
-    if freeVarIndex != -1 {
-        solution[freeVarIndex] = 1
-    } else {
-        // 没有自由变量，返回零解
-        return solution
-    }
+	if freeVarIndex != -1 {
+		solution[freeVarIndex] = 1
+	} else {
+		// 没有自由变量，返回零解
+		return solution
+	}
 
-    // 回代求解主元变量
-    for r := rank - 1; r >= 0; r-- {
-        pivotCol := pivotCols[r]
-        if pivotCol == -1 {
-            continue
-        }
+	// 回代求解主元变量
+	for r := rank - 1; r >= 0; r-- {
+		pivotCol := pivotCols[r]
+		if pivotCol == -1 {
+			continue
+		}
 
-        var sum byte = 0
-        for c := pivotCol + 1; c < numVars; c++ {
-            sum ^= rref.Get(r, c) * solution[c]
-        }
-        solution[pivotCol] = sum
-    }
+		var sum byte = 0
+		for c := pivotCol + 1; c < numVars; c++ {
+			sum ^= rref.Get(r, c) * solution[c]
+		}
+		solution[pivotCol] = sum
+	}
 
-    return solution
+	return solution
 }
 
 // formatAnnihilator 将解向量格式化为人类可读的 ANF 字符串.
 func formatAnnihilator(solution []byte, monomials []int, n int) string {
-    // 创建一个长度为 2^n 的完整 ANF 系数向量
-    hCoeffs := make([]byte, 1<<n)
-    for i, coeff := range solution {
-        if coeff == 1 {
-            monomialIndex := monomials[i]
-            hCoeffs[monomialIndex] = 1
-        }
-    }
+	// 创建一个长度为 2^n 的完整 ANF 系数向量
+	hCoeffs := make([]byte, 1<<n)
+	for i, coeff := range solution {
+		if coeff == 1 {
+			monomialIndex := monomials[i]
+			hCoeffs[monomialIndex] = 1
+		}
+	}
 
-    // 格式化为字符串
-    var terms []string
-    for i, coeff := range hCoeffs {
-        if coeff == 1 {
-            if i == 0 {
-                terms = append(terms, "1")
-            } else {
-                var termParts []string
-                for j := 0; j < n; j++ {
-                    if (i>>j)&1 == 1 {
-                        termParts = append(termParts, fmt.Sprintf("x%d", j))
-                    }
-                }
-                terms = append(terms, strings.Join(termParts, "*"))
-            }
-        }
-    }
+	// 格式化为字符串
+	var terms []string
+	for i, coeff := range hCoeffs {
+		if coeff == 1 {
+			if i == 0 {
+				terms = append(terms, "1")
+			} else {
+				var termParts []string
+				for j := 0; j < n; j++ {
+					if (i>>j)&1 == 1 {
+						termParts = append(termParts, fmt.Sprintf("x%d", j))
+					}
+				}
+				terms = append(terms, strings.Join(termParts, "*"))
+			}
+		}
+	}
 
-    if len(terms) == 0 {
-        return "0"
-    }
-    return strings.Join(terms, " + ")
+	if len(terms) == 0 {
+		return "0"
+	}
+	return strings.Join(terms, " + ")
 }
 
 /*上面包裹的是计算代数免疫度和零化因子的函数*/
-
-

@@ -26,6 +26,9 @@ type AnalyzeResult struct {
 	AbsoluteIndicator               int64
 	DifferentialUniformity          int64
 	AlgebraicImmunity               int
+	FAA                             int
+	FAAWithPositiveDegree           int
+	FAI                             int
 }
 
 // AnalyzeAll 计算所有核心性质（快速版本：代数免疫度不求零化子表达式）。
@@ -53,6 +56,21 @@ func AnalyzeAll(bf *BooleanFunction) AnalyzeResult {
 		res.AlgebraicImmunity = ai
 	} else {
 		res.AlgebraicImmunity = -1
+	}
+	if faa, err := bf.FAA(); err == nil {
+		res.FAA = faa
+	} else {
+		res.FAA = -1
+	}
+	if faaPositive, err := bf.FAAWithPositiveDegree(); err == nil {
+		res.FAAWithPositiveDegree = faaPositive
+	} else {
+		res.FAAWithPositiveDegree = -1
+	}
+	if fai, err := bf.FAI(); err == nil {
+		res.FAI = fai
+	} else {
+		res.FAI = -1
 	}
 	return res
 }
@@ -94,6 +112,27 @@ func AnalyzeAllTimed(bf *BooleanFunction) (AnalyzeResult, map[string]time.Durati
 			res.AlgebraicImmunity = ai
 		} else {
 			res.AlgebraicImmunity = -1
+		}
+	})
+	step("faa", func() {
+		if faa, err := bf.FAA(); err == nil {
+			res.FAA = faa
+		} else {
+			res.FAA = -1
+		}
+	})
+	step("faa_positive_degree", func() {
+		if faaPositive, err := bf.FAAWithPositiveDegree(); err == nil {
+			res.FAAWithPositiveDegree = faaPositive
+		} else {
+			res.FAAWithPositiveDegree = -1
+		}
+	})
+	step("fai", func() {
+		if fai, err := bf.FAI(); err == nil {
+			res.FAI = fai
+		} else {
+			res.FAI = -1
 		}
 	})
 

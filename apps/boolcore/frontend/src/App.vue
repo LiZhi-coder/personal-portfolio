@@ -530,6 +530,24 @@ const handleFileUpload = (event) => {
               </div>
 
               <div class="dashboard-card">
+                <div class="dashboard-icon">⚡</div>
+                <div class="dashboard-label">FAA</div>
+                <div class="dashboard-value highlight">{{ analysisResult.faa !== undefined && analysisResult.faa >= 0 ? analysisResult.faa : 'N/A' }}</div>
+              </div>
+
+              <div class="dashboard-card">
+                <div class="dashboard-icon">⚙️</div>
+                <div class="dashboard-label">FAA (deg(g)≥1)</div>
+                <div class="dashboard-value highlight">{{ analysisResult.faaWithPositiveDegree !== undefined && analysisResult.faaWithPositiveDegree >= 0 ? analysisResult.faaWithPositiveDegree : 'N/A' }}</div>
+              </div>
+
+              <div class="dashboard-card">
+                <div class="dashboard-icon">🧩</div>
+                <div class="dashboard-label">FAI</div>
+                <div class="dashboard-value highlight">{{ analysisResult.fai !== undefined && analysisResult.fai >= 0 ? analysisResult.fai : 'N/A' }}</div>
+              </div>
+
+              <div class="dashboard-card">
                 <div class="dashboard-icon">🧮</div>
                 <div class="dashboard-label">代数次数</div>
                 <div class="dashboard-value">{{ analysisResult.algebraicDegree }}</div>
@@ -712,6 +730,18 @@ const handleFileUpload = (event) => {
                     <div class="property-item">
                       <span class="property-label">代数免疫度:</span>
                       <span class="property-value highlight">{{ analysisResult.algebraicImmunity !== undefined && analysisResult.algebraicImmunity >= 0 ? analysisResult.algebraicImmunity : 'N/A' }}</span>
+                    </div>
+                    <div class="property-item">
+                      <span class="property-label">FAA:</span>
+                      <span class="property-value highlight">{{ analysisResult.faa !== undefined && analysisResult.faa >= 0 ? analysisResult.faa : 'N/A' }}</span>
+                    </div>
+                    <div class="property-item">
+                      <span class="property-label">FAA (deg(g)≥1):</span>
+                      <span class="property-value highlight">{{ analysisResult.faaWithPositiveDegree !== undefined && analysisResult.faaWithPositiveDegree >= 0 ? analysisResult.faaWithPositiveDegree : 'N/A' }}</span>
+                    </div>
+                    <div class="property-item">
+                      <span class="property-label">FAI:</span>
+                      <span class="property-value highlight">{{ analysisResult.fai !== undefined && analysisResult.fai >= 0 ? analysisResult.fai : 'N/A' }}</span>
                     </div>
                     <div class="property-item">
                       <span class="property-label">差分均匀度:</span>
