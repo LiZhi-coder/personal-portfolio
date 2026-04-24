@@ -174,5 +174,45 @@
     "description": "天边的云被晚霞慢慢染开，楼体和远山都退成了剪影。",
     "image": "/images/photos/campus-sunset-clouds.jpg",
     "alt": "晚霞下的校园楼体与远处山影"
+  },
+  {
+    "id": "photo-23",
+    "title": "暮色街景",
+    "date": "2026-04-23",
+    "description": "黄昏时分的城市街道，天空呈现出深邃的蓝色，点缀着层叠的云朵。街道两旁的建筑灯火通明，路灯散发出温暖的橙黄色光芒，照亮了空旷的马路。这是一个宁静的傍晚时刻，展现了城市从白天到夜晚过渡的美丽瞬间",
+    "image": "/images/photos/Twilight Serenity.png",
+    "alt": "黄昏时分的城市街道，蓝色天空下两侧建筑林立，路灯照亮空旷的马路"
+  },
+  {
+    "id": "photo-24",
+    "title": "南京晚霞",
+    "date": "2026-04-23",
+    "description": "小房子的视角，看城市外的晚霞，云层被染成了橘红色。",
+    "image": "/images/photos/nanjing-sunset.jpg",
+    "alt": "南京晚霞下的城市景象"
+  },
+  {
+    "id": "photo-25",
+    "title": "菜心",
+    "date": "2026-04-23",
+    "description": "菜心的叶子和茎都很嫩，颜色也很鲜亮，吃起来口感很好。",
+    "image": "/images/photos/caixin.jpg",
+    "alt": "新鲜的菜心"
+  },
+  {
+    "id": "photo-26",
+    "title": "乒乓球后的聚餐",
+    "date": "2026-04-23",
+    "description": "桌上摆满了菜肴和饮料，气氛很热闹。",
+    "image": "/images/photos/4.23jucan.jpg",
+    "alt": "乒乓球后的聚餐场景"
+  },
+  {
+    "id": "photo-27",
+    "title": "跳一跳",
+    "date": "2026-04-23",
+    "description": "跳一跳闯关游戏，分数显示在屏幕上，旁边还有一些游戏元素。",
+    "image": "/images/photos/jump.jpg",
+    "alt": "跳一跳游戏"
   }
 ]
