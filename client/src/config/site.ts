@@ -9,7 +9,7 @@ export const siteConfig = {
     title: "Backend Developer · Devops Engineer",
     siteName: "Hui Studio",
     email: "lizhihui916@163.com",
-    avatar: "/avatar1.png",
+    avatar: "/avatar1.webp",
 
     // 社交链接
     social: {

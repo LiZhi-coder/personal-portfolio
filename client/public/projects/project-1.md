@@ -37,7 +37,7 @@ description: 现如今关于Boolean Function的搜索的研究做的人很多，
 - 核心计算层：纯 Go 算法库，包含并行版 FWHT 与位操作库
 
 
-![ANF图](/images/projects/project-1/image.png)
+![ANF图](/images/projects/project-1/image.webp)
 
 
 ## 开发过程与挑战

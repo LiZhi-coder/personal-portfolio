@@ -380,14 +380,92 @@ App
 | :--- | :--- | :--- |
 | 修改个人名字 | `client/src/config/site.ts` | 修改站点基础信息 |
 | 修改导航菜单 | `Navigation.tsx` | 修改 `navItems` 数组 |
-| 添加项目 | `client/public/projects.json` + `client/public/projects/*.md` | 列表和正文要同时补 |
-| 添加照片 | `client/public/images/photos/` + `client/public/photos.json` | 图片和元数据要同时补 |
+| 添加项目 | 参考下方 [新增项目](#新增项目) | 列表和正文要同时补 |
+| 添加博客 | 参考下方 [新增博客文章](#新增博客文章) | Markdown + Frontmatter |
+| 添加照片 | 参考下方 [新增照片](#新增照片) | 图片和元数据要同时补 |
 | 修改照片墙顺序 | `client/public/photos.json` | 页面按 JSON 数组顺序展示 |
 | 修改颜色 | `index.css` | 修改 CSS 变量 |
 | 修改字体 | `client/src/index.css` | 调整全局字体变量和排版 |
 | 添加新页面 | 创建新 `.tsx` 文件 | 在 `pages/` 目录中创建 |
 | 添加新组件 | 创建新 `.tsx` 文件 | 在 `components/` 目录中创建 |
 | 修改 Nginx 配置 | `infra/nginx/*.conf` | 由 GitHub Actions 同步到服务器 |
+
+### 内容管理操作指南
+
+#### 新增博客文章
+
+1. 在 `client/public/blog/` 下新建 `.md` 文件（参考 `blog/template.md`）：
+
+```markdown
+---
+title: 文章标题
+date: 2026-05-23
+excerpt: 简短摘要（可选，不写会自动从正文截取）
+readingTime: 5（可选，不写会自动计算）
+---
+
+# 文章标题
+
+正文内容...
+```
+
+2. 如果文章有配图，放在 `client/public/images/blog/`，在 Markdown 中引用：
+```markdown
+![配图](/images/blog/your-image.png)
+```
+
+3. 完事。`pnpm build`（或 `git push` 触发 CI 部署）时 `prebuild` 会自动扫描所有 `.md` 文件并生成 `blog.json`。
+
+> 注意：文件名不要命名为 `template.md`（会被忽略）。
+
+#### 新增项目
+
+1. 在 `client/public/projects/` 下新建 `.md` 文件（参考 `projects/template.md`）：
+
+```markdown
+---
+title: 项目名称
+date: 2026-05-23
+tags: [Go, React, DevOps]
+link: https://github.com/xxx
+description: 项目简介
+---
+
+# 项目名称
+
+正文...
+```
+
+2. 项目截图放在 `client/public/images/projects/<项目名>/`，在 Markdown 中引用：
+```markdown
+![截图](/images/projects/<项目名>/image.png)
+```
+
+3. 完事。`prebuild` 会自动扫描并生成 `projects.json`。
+
+#### 新增照片
+
+1. 将图片（jpg 或 png）放到 `client/public/images/photos/`
+
+2. 在 `client/public/photos.json` 中新增一条记录：
+
+```json
+{
+  "id": "新照片的唯一标识",
+  "title": "照片标题",
+  "date": "2026-05-23",
+  "description": "一两句话描述",
+  "image": "/images/photos/文件名.webp",
+  "alt": "无障碍替代文字"
+}
+```
+
+3. 完事。`prebuild` 会自动运行 `optimize-images.js`：
+   - 将 jpg/png 转为 webp
+   - 删除原始文件（webp 更大时保留原始文件）
+   - 已转换过的图片自动跳过
+
+> 照片的 `photos.json` 需要手动编辑，因为标题、描述等元数据无法从文件中自动提取。
 
 ---
 
