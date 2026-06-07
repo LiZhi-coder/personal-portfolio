@@ -214,5 +214,21 @@
     "description": "跳一跳闯关游戏，分数显示在屏幕上，旁边还有一些游戏元素。",
     "image": "/images/photos/jump.webp",
     "alt": "跳一跳游戏"
+  },
+  {
+    "id": "photo-28",
+    "title": "北京烤鸭",
+    "date": "2026-06-06",
+    "description": "跟南京一样，没有一只鸭子能完好无损地离开北京",
+    "image": "/images/photos/beijing-duck.webp",
+    "alt": "北京烤鸭"
+  },
+  {
+    "id": "photo-29",
+    "title": "什刹海",
+    "date": "2026-06-06",
+    "description": "什刹海，来北京看海啦",
+    "image": "/images/photos/beijing-sea.webp",
+    "alt": "什刹海"
   }
 ]
