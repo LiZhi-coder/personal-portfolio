@@ -100,6 +100,9 @@ jspm_packages/
 tmp/
 temp/
 
+# Photo staging (local only, processed photos go to client/public/images/photos)
+照片更新仓库/
+
 # Database
 *.db
 *.sqlite

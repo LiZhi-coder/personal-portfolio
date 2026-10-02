@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { useFetchData } from "@/hooks/useFetchData";
 import { Helmet } from "react-helmet-async";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 interface PhotoItem {
   id: string;
@@ -38,6 +38,11 @@ function formatDate(date: string) {
     month: "short",
     day: "numeric",
   });
+}
+
+function toTimestamp(date: string) {
+  const timestamp = new Date(date).getTime();
+  return Number.isNaN(timestamp) ? 0 : timestamp;
 }
 
 function PhotoVisual({
@@ -73,6 +78,12 @@ export default function Photos() {
     error,
   } = useFetchData<PhotoItem>("/photos.json", "加载照片列表失败");
   const [selectedPhoto, setSelectedPhoto] = useState<PhotoItem | null>(null);
+
+  // 按拍摄日期倒序排列，最新拍的照片排在最前
+  const sortedPhotos = useMemo(
+    () => [...photos].sort((a, b) => toTimestamp(b.date) - toTimestamp(a.date)),
+    [photos],
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans selection:bg-primary/10">
@@ -113,18 +124,18 @@ export default function Photos() {
               </div>
             )}
 
-            {!loading && !error && photos.length === 0 && (
+            {!loading && !error && sortedPhotos.length === 0 && (
               <div className="text-center py-20">
                 <p className="text-muted-foreground text-lg">暂无照片</p>
               </div>
             )}
 
-            {!loading && !error && photos.length > 0 && (
+            {!loading && !error && sortedPhotos.length > 0 && (
               <div
                 className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 animate-fade-in-up"
                 style={{ animationDelay: "0.2s" }}
               >
-                {photos.map((photo) => (
+                {sortedPhotos.map((photo) => (
                   <button
                     key={photo.id}
                     type="button"

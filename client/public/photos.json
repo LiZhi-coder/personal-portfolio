@@ -1,13 +1,5 @@
 [
   {
-    "id": "photo-1",
-    "title": "抹茶蛋糕",
-    "date": "2026-03-19",
-    "description": "一块抹茶蛋糕和一份冰淇淋，甜度刚好，适合慢慢吃完。",
-    "image": "/images/photos/matcha-cake-and-ice-cream.webp",
-    "alt": "桌上的抹茶蛋糕与一份冰淇淋"
-  },
-  {
     "id": "photo-2",
     "title": "一盘青菜",
     "date": "2026-03-19",
@@ -26,7 +18,7 @@
   {
     "id": "photo-4",
     "title": "北京站台发车",
-    "date": "2026-04-1",
+    "date": "2026-04-01",
     "description": "G35 次列车准备开往上海虹桥，辛苦的一天，早上出发晚上回来。",
     "image": "/images/photos/g35-train-platform-8.webp",
     "alt": "高铁站 8 号站台上的 G35 次列车"
@@ -230,5 +222,53 @@
     "description": "什刹海，来北京看海啦",
     "image": "/images/photos/beijing-sea.webp",
     "alt": "什刹海"
+  },
+  {
+    "id": "photo-30",
+    "title": "橘子洲头",
+    "date": "2026-10-01",
+    "description": "夜里的青年毛泽东艺术雕塑，头发被风掀起的样子，在深蓝的天幕下很安静。",
+    "image": "/images/photos/changsha-orange-isle-mao-statue-night.webp",
+    "alt": "夜晚灯光下的橘子洲头青年毛泽东艺术雕塑"
+  },
+  {
+    "id": "photo-31",
+    "title": "席纹陶罐",
+    "date": "2026-10-01",
+    "description": "展柜里打着一束光，罐身的席纹一层层压过去，像把纹路织进了泥土里。",
+    "image": "/images/photos/ancient-pottery-jar-mat-pattern.webp",
+    "alt": "博物馆展柜中布满席纹的古代陶罐"
+  },
+  {
+    "id": "photo-32",
+    "title": "马王堆帛书",
+    "date": "2026-10-01",
+    "description": "展柜里平铺开的长卷，丝帛上的字迹密密麻麻，写的是两千年前的纵横说辞。",
+    "image": "/images/photos/mawangdui-silk-manuscript.webp",
+    "alt": "博物馆展柜中平铺展示的马王堆帛书"
+  },
+  {
+    "id": "photo-33",
+    "title": "双椒鱼",
+    "date": "2026-10-01",
+    "description": "整条鱼盖上红绿剁椒，旁边两盘小炒也全是辣椒，辣得很热闹。",
+    "image": "/images/photos/whole-fish-topped-with-chilies.webp",
+    "alt": "铺满红绿辣椒的整条鱼与两盘小炒"
+  },
+  {
+    "id": "photo-34",
+    "title": "陆家嘴三件套",
+    "date": "2026-10-01",
+    "description": "站在楼下把镜头抬到最高，三栋楼在夜色里围出一小片天。",
+    "image": "/images/photos/shanghai-three-towers-from-below-night.webp",
+    "alt": "夜晚从楼下仰视的上海中心大厦、金茂大厦与环球金融中心"
+  },
+  {
+    "id": "photo-35",
+    "title": "bilibili 大楼",
+    "date": "2026-10-01",
+    "description": "黄昏路过，bilibili 的蓝色灯牌和火山引擎的招牌前后亮着。",
+    "image": "/images/photos/bilibili-volcano-engine-signs-dusk.webp",
+    "alt": "黄昏时分亮着灯的 bilibili 与火山引擎大楼招牌"
   }
 ]
